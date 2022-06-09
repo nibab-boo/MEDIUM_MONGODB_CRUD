@@ -13,10 +13,10 @@ app.use(cors());
 // Connecting to MongoDB
 const url = `mongodb+srv://${process.env.USERNAME}:${process.env.PASSWORD}@cluster0.e6m8sua.mongodb.net/${process.env.DATABASE}?retryWrites=true&w=majority`
 mongoose.connect(url)
-
 app.use(express.json());
 
-// CRUD ON DOCUMENT
+
+/* ----- CRUD ON DOCUMENT ------- */
 
 // Create
 app.post("/api/restaurants/create", async (req, res) => {
@@ -54,6 +54,25 @@ app.get("/api/restaurants", async (req, res) => {
     res.json({ code: "error" })
   }
 });
+
+app.get("/api/restaurant/:id", async (req, res) => {
+  const id = req.params.id;
+  
+  try {
+    const restaurant = await restaurantModel.findOne({
+      "_id": id
+    })
+    if (restaurant) {
+      console.log(restaurant);
+      res.json({ code: "success", restaurant: restaurant });
+    } else {
+      res.json({ code: "error", msg: "No restaurant found" });
+    }
+  } catch (error) {
+    console.log(error);
+    res.json({ code: "error" })
+  }
+})
 
 
 

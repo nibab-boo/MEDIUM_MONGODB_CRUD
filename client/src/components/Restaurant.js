@@ -1,4 +1,5 @@
 import React from 'react';
+import { useParams } from 'react-router-dom';
 
 import { Card, CardBody, CardTitle, CardText, Button, CardColumns } from 'reactstrap';
 import RestaurantForm from './RestaurantForm';
@@ -6,16 +7,21 @@ import ReviewForm from './ReviewForm';
 
 const Restaurant = () => {
 
+  const { id } = useParams();
   const [restaurant, setRestaurant] = React.useState({});
 
 
   React.useEffect(() => {
-    setRestaurant({
-      title: 'Burger',
-      description: "Fake description",
-      reviews: [{ content: "fake_review1" }, { content: "fake_review2" }]
-    });
-  }, []);
+    (async () => {
+      const res = await fetch(`/api/restaurant/${id}`);
+      const data = await res.json();
+      console.log("restaurant data: ", data);
+      if (data.code === "success") {
+        console.log(data.restaurant);
+        setRestaurant(data.restaurant);
+      }
+    }) ();
+  }, [id]);
 
   const createReview = (data) => {
     console.log(data);
