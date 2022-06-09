@@ -25,8 +25,17 @@ const Restaurant = () => {
     console.log(data);
   }
 
-  const updateRestaurant = (data) => {
-    console.log(data)
+  const updateRestaurant = async (resInfo) => {
+    const res = await fetch(`/api/restaurants/${restaurant._id}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json"},
+      body: JSON.stringify(resInfo),
+    })
+    const data = await res.json();
+    if (data.code === "success") {
+      const newRestaurant = data.restaurant;
+      setRestaurant( newRestaurant );
+    }
   }
 
   return (

@@ -39,6 +39,7 @@ app.post("/api/restaurants/create", async (req, res) => {
 app.get("/api/restaurants", async (req, res) => {
   
   try {
+    // Since, we donot specify the query, we get everything.
     const restaurants = await restaurantModel.find({},
       // Projections: https://www.mongodb.com/docs/manual/reference/method/db.collection.find/#definition
       // Specifying we only need need title and description. We get _id by default
@@ -55,10 +56,12 @@ app.get("/api/restaurants", async (req, res) => {
   }
 });
 
+// Read Only one restaurant
 app.get("/api/restaurant/:id", async (req, res) => {
   const id = req.params.id;
-  
+
   try {
+    // findOne gives the first Document that matches the query.
     const restaurant = await restaurantModel.findOne({
       "_id": id
     })
@@ -73,6 +76,47 @@ app.get("/api/restaurant/:id", async (req, res) => {
     res.json({ code: "error" })
   }
 })
+
+
+// Update Restaurant
+app.put("/api/restaurants/:id", async (req, res) => {
+  const id = req.params.id;
+  try {
+    // Updating the Restaurant
+    await restaurantModel.updateOne({
+      "_id": id
+    },{
+      title: req.body.title,
+      description: req.body.description,
+    })
+
+    // Retriving it
+    const restaurant = await restaurantModel.findOne({
+      "_id": id
+    })
+    res.json({ code: "success", restaurant: restaurant })
+  } catch (error) {
+    console.log(error);
+    res.json({ code: "error" });
+  }
+})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
