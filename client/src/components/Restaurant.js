@@ -10,14 +10,12 @@ const Restaurant = () => {
   const { id } = useParams();
   const [restaurant, setRestaurant] = React.useState({});
 
-
   React.useEffect(() => {
     (async () => {
       const res = await fetch(`/api/restaurant/${id}`);
       const data = await res.json();
       console.log("restaurant data: ", data);
       if (data.code === "success") {
-        console.log(data.restaurant);
         setRestaurant(data.restaurant);
       }
     }) ();
@@ -69,7 +67,7 @@ const Restaurant = () => {
       </div>
       <div className='col-12 mt-3 p-3 border col-md-6'>
         <h4 className='my-3'> Update Restaurant </h4>
-        < RestaurantForm oldTitle={restaurant.title} oldDesc={restaurant.description} submitAction={ updateRestaurant }/>
+        < RestaurantForm submitAction={ updateRestaurant }/>
       </div>
     </div>
   );
