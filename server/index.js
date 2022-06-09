@@ -102,6 +102,27 @@ app.put("/api/restaurants/:id", async (req, res) => {
 })
 
 
+// Delete Restaurant
+app.delete("/api/restaurants/:id", async (req, res) => {
+  const id = req.params.id;
+
+  try {
+    const response = await restaurantModel.deleteOne({
+      "_id": id
+    })
+
+    if (response.acknowledged === true) {
+      // You can sent back all the restaurant or, 
+      // filterout Restaurants in frontend.
+      res.json({ code: "success", restaurantId: id });
+    } else {
+      res.json({ code: "error", msg: "Access denied"});
+    }
+  } catch (error) {
+    console.log(error);
+    res.json({ code: "error" });
+  }
+})
 
 
 

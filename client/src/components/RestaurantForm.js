@@ -4,9 +4,6 @@ import { Form, FormGroup, Label, Button, Input } from 'reactstrap'
 const RestaurantForm = ({ submitAction }) => {
   const [title, setTitle ] = React.useState("");
   const [description, setDescription ] = React.useState("");
-
-  console.log(title);
-  console.log(description);
   
   const submitForm = (e) => {
     e.preventDefault();

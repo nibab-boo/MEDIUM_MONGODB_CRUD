@@ -37,7 +37,16 @@ const Restaurants = () => {
   }
 
   const deleteRestaurant = async (id) => {
-    console.log("from Delete: ", id);
+    const res = await fetch(`/api/restaurants/${id}`, {
+      method: "DELETE",
+    });
+    const data = await res.json();
+    if (data.code === "success") {
+      console.log(data);
+      const newRestaurants = restaurants.filter((restaurant) => restaurant._id !== data.restaurantId);
+      console.log(newRestaurants);
+      setRestaurants([...newRestaurants]);
+    }
   }
 
   return (
