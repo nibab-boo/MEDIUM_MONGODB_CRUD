@@ -8,11 +8,21 @@ const Restaurants = () => {
 
 
   React.useEffect(() => {
-    setRestaurants(["demo", "demo"]);
-  }, []);
+    console.log(restaurants);
+  }, [restaurants]);
 
-  const createRestaurant = (data) => {
-    console.log(data);
+  const createRestaurant = async (restaurant) => {
+    const res = await fetch("http://localhost:1234/api/restaurants/create", {
+      method: "POST",
+      headers: { "Content-Type": "application/json"},
+      body: JSON.stringify(restaurant),
+    })
+    const data = await res.json();
+    if (data.code === "success") {
+      const newRestaurant = data.restaurant;
+      console.log(newRestaurant);
+      setRestaurants([...restaurants, { newRestaurant }])
+    }
   }
 
   return (
