@@ -1,9 +1,11 @@
 import React from 'react';
 import { Card, CardBody, CardTitle, CardText, Button, CardColumns } from 'reactstrap';
 import RestaurantForm from './RestaurantForm';
+import { useNavigate } from 'react-router-dom';
 
 const Restaurants = () => {
 
+  const navigate = useNavigate();
   const [restaurants, setRestaurants] = React.useState([]);
 
 
@@ -30,6 +32,14 @@ const Restaurants = () => {
     }
   }
 
+  const goToShow = (id) => {
+    navigate(`/restaurants/${id}`);
+  }
+
+  const deleteRestaurant = async (id) => {
+    console.log("from Delete: ", id);
+  }
+
   return (
     <div className="row pt-5">
       <h2 className='pb-5'>Restaurants</h2>
@@ -45,10 +55,10 @@ const Restaurants = () => {
                   <CardText>
                     {restaurant.description}
                   </CardText>
-                  <Button onClick={() => console.log("hello")}>
+                  <Button onClick={() => goToShow(restaurant._id)}>
                     Details
                   </Button>
-                  <Button color='danger' className='mx-3' onClick={() => console.log("hello")}>
+                  <Button color='danger' className='mx-3' onClick={() => deleteRestaurant(restaurant._id)}>
                     Delete
                   </Button>
                 </CardBody>
