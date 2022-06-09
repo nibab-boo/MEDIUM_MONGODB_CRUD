@@ -7,12 +7,17 @@ const Restaurants = () => {
   const [restaurants, setRestaurants] = React.useState([]);
 
 
-  React.useEffect(() => {
-    console.log(restaurants);
-  }, [restaurants]);
+  React.useEffect( () => {
+    (async () => {
+      const res = await fetch("/api/restaurants")
+      const data = await res.json();
+      console.log(data);
+      setRestaurants([...(data.restaurants)])
+    })();
+  }, []);
 
   const createRestaurant = async (restaurant) => {
-    const res = await fetch("http://localhost:1234/api/restaurants/create", {
+    const res = await fetch("/api/restaurants/create", {
       method: "POST",
       headers: { "Content-Type": "application/json"},
       body: JSON.stringify(restaurant),
@@ -35,13 +40,16 @@ const Restaurants = () => {
               <Card className='my-3'>
                 <CardBody>
                   <CardTitle tag="h5">
-                    Card title
+                    {restaurant.title}
                   </CardTitle>
                   <CardText>
-                    This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.
+                    {restaurant.description}
                   </CardText>
                   <Button onClick={() => console.log("hello")}>
-                    Button
+                    Details
+                  </Button>
+                  <Button color='danger' className='mx-3' onClick={() => console.log("hello")}>
+                    Delete
                   </Button>
                 </CardBody>
               </Card>

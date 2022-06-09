@@ -34,6 +34,27 @@ app.post("/api/restaurants/create", async (req, res) => {
 });
 
 
+// Read 
+// Read all restaurants excluding their reviews
+app.get("/api/restaurants", async (req, res) => {
+  
+  try {
+    const restaurants = await restaurantModel.find({},
+      // Projections: https://www.mongodb.com/docs/manual/reference/method/db.collection.find/#definition
+      // Specifying we only need need title and description. We get _id by default
+      {
+        title: 1,
+        description: 1,
+      }
+    )
+
+    res.json({ code: "success", restaurants: restaurants })
+  } catch (error) {
+    console.log(error);
+    res.json({ code: "error" })
+  }
+});
+
 
 
 // listening at PORT.
