@@ -43,12 +43,12 @@ app.get("/api/restaurants", async (req, res) => {
     // Since, we donot specify the query, we get everything.
     const restaurants = await restaurantModel.find({},
       // Projections: https://www.mongodb.com/docs/manual/reference/method/db.collection.find/#definition
-      // Specifying we only need need title and description. We get _id by default
+      // Specifying we donot want reviews for this one.
       {
         title: 1,
         description: 1,
       }
-    )
+    );
 
     res.json({ code: "success", restaurants: restaurants })
   } catch (error) {
@@ -64,7 +64,7 @@ app.get("/api/restaurant/:id", async (req, res) => {
     // findOne gives the first Document that matches the query.
     const restaurant = await restaurantModel.findOne({
       "_id": id
-    })
+    });
     if (restaurant) {
       console.log(restaurant);
       res.json({ code: "success", restaurant: restaurant });
@@ -75,7 +75,7 @@ app.get("/api/restaurant/:id", async (req, res) => {
     console.log(error);
     res.json({ code: "error" })
   }
-})
+});
 
 
 // Update Restaurant
@@ -88,7 +88,7 @@ app.put("/api/restaurants/:id", async (req, res) => {
     },{
       title: req.body.title,
       description: req.body.description,
-    })
+    });
 
     // Retriving it
     const restaurant = await restaurantModel.findOne({
@@ -99,7 +99,7 @@ app.put("/api/restaurants/:id", async (req, res) => {
     console.log(error);
     res.json({ code: "error" });
   }
-})
+});
 
 
 // Delete Restaurant
@@ -109,7 +109,7 @@ app.delete("/api/restaurants/:id", async (req, res) => {
   try {
     const response = await restaurantModel.deleteOne({
       "_id": id
-    })
+    });
 
     if (response.acknowledged === true) {
       // You can sent back all the restaurant or, 
@@ -118,6 +118,39 @@ app.delete("/api/restaurants/:id", async (req, res) => {
     } else {
       res.json({ code: "error", msg: "Access denied"});
     }
+  } catch (error) {
+    console.log(error);
+    res.json({ code: "error" });
+  }
+});
+
+
+
+/* ------ CRUD ON SUB-DOCUMENTS ------ */
+
+// Create review and Reading only one reviews
+app.post("/api/restaurants/:id/reviews/create", async (req, res) => {
+  const id = req.params.id;
+  try {
+    const response = await restaurantModel.updateOne({
+      "_id": id
+    }, {
+      // Push helps to push new reviews to restaurant 
+      $push: { reviews: req.body }
+    });
+
+    // Read only one specific review from sub-document
+    const review = await restaurantModel.findOne({
+      // narrow down the selection process
+      "_id": id,
+      // better to have unique Seletor like
+      // "reviews._id": reviewId
+      "reviews.content": req.body.content,
+    }, 
+    {
+      "reviews.$": 1,
+    })
+    res.json( { code: "success", review: review.reviews[0] })
   } catch (error) {
     console.log(error);
     res.json({ code: "error" });

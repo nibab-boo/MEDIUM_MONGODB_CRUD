@@ -9,20 +9,37 @@ const Restaurant = () => {
 
   const { id } = useParams();
   const [restaurant, setRestaurant] = React.useState({});
+  const [reviews, setReviews] = React.useState([]);
 
   React.useEffect(() => {
     (async () => {
       const res = await fetch(`/api/restaurant/${id}`);
       const data = await res.json();
-      console.log("restaurant data: ", data);
       if (data.code === "success") {
-        setRestaurant(data.restaurant);
+        setRestaurant({
+          title: data.restaurant.title,
+          _id: data.restaurant._id,
+          description: data.restaurant.description
+        });
+        setReviews([...data.restaurant.reviews])
       }
     }) ();
   }, [id]);
 
-  const createReview = (data) => {
-    console.log(data);
+  const createReview = async (reviewData) => {
+    console.log(reviewData);
+    // We are sending out id so it will be easier to find the document.
+    const res = await fetch(`/api/restaurants/${restaurant._id}/reviews/create`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify( { content: reviewData.review } )
+    });
+
+    const data = await res.json();
+    if (data.code === "success") {
+      console.log(data.review);
+      setReviews([...reviews, data.review]);
+    }
   }
 
   const updateRestaurant = async (resInfo) => {
@@ -58,8 +75,8 @@ const Restaurant = () => {
             </Card>
         </CardColumns>
         <div>
-          { restaurant.reviews &&
-            restaurant.reviews.map(review => (
+          { reviews &&
+            reviews.map(review => (
               <div className='p-3 w-100 border'>
                 <form>
                   <input placeholder={review.content} />
