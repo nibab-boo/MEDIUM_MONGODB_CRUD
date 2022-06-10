@@ -11,6 +11,8 @@ const app = express();
 app.use(cors());
 
 // Connecting to MongoDB
+// You might have got something like this. Change it like before using it.
+// mongodb+srv://babin:<password>@cluster0.e6m8sua.mongodb.net/?retryWrites=true&w=majority
 const url = `mongodb+srv://${process.env.USERNAME}:${process.env.PASSWORD}@cluster0.e6m8sua.mongodb.net/${process.env.DATABASE}?retryWrites=true&w=majority`
 mongoose.connect(url)
 app.use(express.json());
@@ -37,7 +39,6 @@ app.post("/api/restaurants/create", async (req, res) => {
 // Read 
 // Read all restaurants excluding their reviews
 app.get("/api/restaurants", async (req, res) => {
-  
   try {
     // Since, we donot specify the query, we get everything.
     const restaurants = await restaurantModel.find({},
@@ -59,7 +60,6 @@ app.get("/api/restaurants", async (req, res) => {
 // Read Only one restaurant
 app.get("/api/restaurant/:id", async (req, res) => {
   const id = req.params.id;
-
   try {
     // findOne gives the first Document that matches the query.
     const restaurant = await restaurantModel.findOne({

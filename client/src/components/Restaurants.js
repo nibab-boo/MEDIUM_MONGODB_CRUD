@@ -28,7 +28,7 @@ const Restaurants = () => {
     if (data.code === "success") {
       const newRestaurant = data.restaurant;
       console.log(newRestaurant);
-      setRestaurants([...restaurants, { newRestaurant }])
+      setRestaurants([...restaurants, newRestaurant])
     }
   }
 
