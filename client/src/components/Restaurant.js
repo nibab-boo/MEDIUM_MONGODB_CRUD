@@ -1,7 +1,7 @@
 import React from 'react';
 import { useParams } from 'react-router-dom';
 
-import { Card, CardBody, CardTitle, CardText, Button, CardColumns } from 'reactstrap';
+import { Card, CardBody, CardTitle, CardText, CardColumns } from 'reactstrap';
 import RestaurantForm from './RestaurantForm';
 import ReviewForm from './ReviewForm';
 
@@ -27,7 +27,6 @@ const Restaurant = () => {
   }, [id]);
 
   const createReview = async (reviewData) => {
-    console.log(reviewData);
     // We are sending out id so it will be easier to find the document.
     const res = await fetch(`/api/restaurants/${restaurant._id}/reviews/create`, {
       method: "POST",
@@ -58,7 +57,6 @@ const Restaurant = () => {
   const editReview = async (e, id) => {
     e.preventDefault();
     const inputField = document.querySelector(`[data-id='${id}'`);
-    console.log("Input Value: ", inputField.value);
     if (inputField.value) {
       const res = await fetch (`/api/restaurants/${restaurant._id}/reviews/${id}`, {
         method: "PUT",
@@ -106,9 +104,6 @@ const Restaurant = () => {
                 <CardText>
                   {restaurant.description}
                 </CardText>
-                <Button color={"danger"} onClick={() => console.log("hello")}>
-                  Delete
-                </Button>
               </CardBody>
             </Card>
         </CardColumns>

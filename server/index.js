@@ -67,7 +67,6 @@ app.get("/api/restaurant/:id", async (req, res) => {
       "_id": id
     });
     if (restaurant) {
-      console.log(restaurant);
       res.json({ code: "success", restaurant: restaurant });
     } else {
       res.json({ code: "error", msg: "No restaurant found" });
