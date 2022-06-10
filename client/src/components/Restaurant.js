@@ -55,6 +55,32 @@ const Restaurant = () => {
     }
   }
 
+  const editReview = async (e, id) => {
+    e.preventDefault();
+    const inputField = document.querySelector(`[data-id='${id}'`);
+    console.log("Input Value: ", inputField.value);
+    if (inputField.value) {
+      const res = await fetch (`/api/restaurants/${restaurant._id}/reviews/${id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ content: inputField.value })
+      })
+      const data = await res.json();
+      if (data.code === "success") {
+        // If update is success
+        const newReviews = reviews.map(review => {
+          if (review._id === id) review.content = inputField.value;
+          return review;
+        })
+        setReviews([...newReviews]);
+      } else {
+        // else manage warning
+        const index = reviews.findIndex(review => review._id === id);
+        inputField.value = reviews[index].content; 
+      }
+    }
+  }
+
   return (
     <div className='row wrap-reverse'>
        <h2 className='pb-5'>Restaurant</h2>
@@ -79,8 +105,8 @@ const Restaurant = () => {
             reviews.map(review => (
               <div className='p-3 w-100 border'>
                 <form>
-                  <input placeholder={review.content} />
-                  <button class="btn-sm btn btn-warning" onClick={() => console.log("edit")} type='submit'>Edit</button>
+                  <input placeholder={review.content} data-id={review._id} />
+                  <button class="btn-sm btn btn-warning" onClick={(e) => editReview(e,review._id)} type='submit'>Edit</button>
                   <button class="btn-sm btn btn-danger" onClick={() => console.log("delete")} type='submit'>Delete</button>
                 </form>
               </div>

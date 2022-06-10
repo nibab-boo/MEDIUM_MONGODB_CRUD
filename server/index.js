@@ -3,6 +3,7 @@ import restaurantModel from './models/restaurant.model.js'
 import express from "express";
 import cors from 'cors';
 import 'dotenv/config';
+import { response } from 'express';
 
 // changes port based on enviroment
 const PORT = process.env.PORT || "1234";
@@ -150,12 +151,38 @@ app.post("/api/restaurants/:id/reviews/create", async (req, res) => {
     {
       "reviews.$": 1,
     })
-    res.json( { code: "success", review: review.reviews[0] })
+    res.json( { code: "success", review: review.reviews[0] });
   } catch (error) {
     console.log(error);
     res.json({ code: "error" });
   }
-})
+});
+
+
+// Update the sub-document
+app.put("/api/restaurants/:restId/reviews/:id", async (req, res) => {
+  const { restId, id } = req.params
+  
+  try {
+    const response = await restaurantModel.updateOne({
+      "_id": restId,
+      "reviews._id": id
+    }, {
+      $set: {
+        'reviews.$': req.body
+        // 'reviews.content': req.body.content
+      }
+    });
+    if (response.acknowledged) {
+      res.json({ code: "success" });
+    } else {
+      res.json({ code: "error", msg: "Access denied" });
+    }
+  } catch (error) {
+    res.json({ code: "error" });
+  }
+  
+});
 
 
 
