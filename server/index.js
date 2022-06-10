@@ -161,7 +161,7 @@ app.post("/api/restaurants/:id/reviews/create", async (req, res) => {
 
 // Update the sub-document
 app.put("/api/restaurants/:restId/reviews/:id", async (req, res) => {
-  const { restId, id } = req.params
+  const { restId, id } = req.params;
   
   try {
     const response = await restaurantModel.updateOne({
@@ -181,7 +181,33 @@ app.put("/api/restaurants/:restId/reviews/:id", async (req, res) => {
   } catch (error) {
     res.json({ code: "error" });
   }
-  
+});
+
+
+// Delete
+app.delete("/api/restaurants/:restId/reviews/:id", async (req, res) => {
+  const { restId, id } = req.params;
+
+  try {
+    const response = await restaurantModel.updateOne({
+      "_id": restId,
+    }, {
+      // pull out by id
+      "$pull": {
+        "reviews": {
+          "_id": id
+        }
+      }
+    });
+    if (response.acknowledged) {
+      res.json({ code: "success" });
+    } else {
+      res.json({ code: "error", msg: "Access denied" })
+    }
+  } catch (error) {
+    console.log(error);
+    res.json({ code: "error" });
+  }
 });
 
 

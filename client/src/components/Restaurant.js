@@ -74,10 +74,22 @@ const Restaurant = () => {
         })
         setReviews([...newReviews]);
       } else {
-        // else manage warning
+        // else manage error
         const index = reviews.findIndex(review => review._id === id);
         inputField.value = reviews[index].content; 
       }
+    }
+  }
+
+  const deleteReview = async (e, id) => {
+    e.preventDefault();
+    const res = await fetch(`/api/restaurants/${restaurant._id}/reviews/${id}`, {
+      method: "DELETE",
+    })
+    const data = await res.json();
+    if (data.code === "success") {
+      const newReviews = reviews.filter(review => review._id !== id);
+      setReviews([...newReviews]);
     }
   }
 
@@ -106,8 +118,8 @@ const Restaurant = () => {
               <div className='p-3 w-100 border'>
                 <form>
                   <input placeholder={review.content} data-id={review._id} />
-                  <button class="btn-sm btn btn-warning" onClick={(e) => editReview(e,review._id)} type='submit'>Edit</button>
-                  <button class="btn-sm btn btn-danger" onClick={() => console.log("delete")} type='submit'>Delete</button>
+                  <button class="btn-sm btn btn-warning" onClick={(e) => editReview(e, review._id)} type='submit'>Edit</button>
+                  <button class="btn-sm btn btn-danger" onClick={(e) => deleteReview(e, review._id)} type='submit'>Delete</button>
                 </form>
               </div>
             ))
